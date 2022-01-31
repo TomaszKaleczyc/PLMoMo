@@ -17,3 +17,5 @@ services:
     container_name: plmomo_v${VERSION}
     ports:
       - ${APP_PORT}:8000
+    volumes:
+      - .:/code/
