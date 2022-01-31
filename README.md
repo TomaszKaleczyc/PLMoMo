@@ -7,4 +7,4 @@ As of January 2022, Poland is still not part of the EuroMOMO project, which has 
 ## Resources
 
 * Dataset: [Statistics Poland mortality data](https://stat.gov.pl/obszary-tematyczne/ludnosc/statystyka-przyczyn-zgonow/)
-* Working environment: Ubuntu18.04 LTS / Python 3.6.9 / virtualenv
+* Working environment: Ubuntu18.04 LTS / Python 3.6.9 / virtualenv / Docker version 20.10.6

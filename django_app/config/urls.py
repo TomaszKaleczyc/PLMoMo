@@ -15,10 +15,13 @@ Including another URLconf
 """
 import logging
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+
+from apps.frontend.views import IndexView
 
 appLogger = logging.getLogger('app-logger')
 
 urlpatterns = [
+    path('', IndexView.as_view(), name='index-view'),
     path('admin/', admin.site.urls),
 ]
