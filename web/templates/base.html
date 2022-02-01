@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
     <link href="//fonts.googleapis.com/css?family=Montserrat:thin,extra-light,light,100,200,300,400,500,600,700,800" rel="stylesheet" type="text/css">
+    <!-- CSSMap STYLESHEET - POLAND -->
+    <link rel="stylesheet" type="text/css" href="{% static 'cssmap-poland/cssmap-poland/cssmap-poland.css' %}" media="screen" />     
     <link rel="stylesheet" href="{% static 'css/style.css' %}" media="screen" type="text/css">
 </head>
 
@@ -18,7 +20,46 @@
     <div class="content">
 
     </div>
+    <!-- CSSMap - Poland -->
+    <div id="map-poland">
+        <ul class="poland">
+            <li class="pl1"><a href="#dolnoslaskie">Dolnośląskie</a></li>
+            <li class="pl2"><a href="#kujawsko-pomorskie">Kujawsko-pomorskie</a></li>
+            <li class="pl3"><a href="#lubelskie">Lubelskie</a></li>
+            <li class="pl4"><a href="#lubuskie">Lubuskie</a></li>
+            <li class="pl5"><a href="#lodzkie">Łódzkie</a></li>
+            <li class="pl6"><a href="#malopolskie">Małopolskie</a></li>
+            <li class="pl7"><a href="#mazowieckie">Mazowieckie</a></li>
+            <li class="pl8"><a href="#opolskie">Opolskie</a></li>
+            <li class="pl9"><a href="#podkarpackie">Podkarpackie</a></li>
+            <li class="pl10"><a href="#podlaskie">Podlaskie</a></li>
+            <li class="pl11"><a href="#pomorskie">Pomorskie</a></li>
+            <li class="pl12"><a href="#slaskie">Śląskie</a></li>
+            <li class="pl13"><a href="#swietokrzyskie">Świętokrzyskie</a></li>
+            <li class="pl14"><a href="#warminsko-mazurskie">Warmińsko-mazurskie</a></li>
+            <li class="pl15"><a href="#wielkopolskie">Wielkopolskie</a></li>
+            <li class="pl16"><a href="#zachodniopomorskie">Zachodniopomorskie</a></li>
+    </ul>
+    </div>
+    <!-- END OF THE CSSMap - Poland -->
+
+<!-- jQuery -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- CSSMap SCRIPT -->
+<script type="text/javascript" src="https://cssmapsplugin.com/5/jquery.cssmap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+    
+    // CSSMap;
+    $("#map-poland").CSSMap({
+      "size": 960
+    });
+    // END OF THE CSSMap;
+    
+    });
+    </script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
-<!-- <script src="{% static 'js/bootstrap-table.min.js' %}"></script> -->
+<script src="{% static 'js/bootstrap-table.min.js' %}"></script>
 </body>
 </html>
