@@ -44,7 +44,7 @@ label {
 
 .header {
     padding: 5px;
-    background: rgb(247, 147, 152);
+    background: rgb(255, 132, 172);
     height: 50px;
     width: 100%;
     text-align: left;
@@ -75,3 +75,5 @@ label {
 }
 
 /* End Header */
+
+/* Map */
