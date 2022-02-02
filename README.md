@@ -11,6 +11,18 @@ As of January 2022, Poland is still not part of the EuroMOMO project, which has 
 * Dataset: [Statistics Poland mortality data](https://stat.gov.pl/obszary-tematyczne/ludnosc/ludnosc/zgony-wedlug-tygodni,39,2.html)
 * Working environment: Ubuntu18.04 LTS / Python 3.6.9 / virtualenv / Docker version 20.10.6
 
+## Project structure
+
+```
+├── backend                             # Application backend code
+│   └── tests                           # Backend code tests
+├── data                                # Data used in the project
+│   └── mortality                       # Spreadsheets with mortality data sourced from Statistics Poland
+├── docs                                # Additional process documentation
+├── environment                         # Definition and contents of the project environment
+└── web                                 # Web application code
+
+```
 
 ## Acknowledgements
 
