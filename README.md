@@ -26,4 +26,4 @@ As of January 2022, Poland is still not part of the EuroMOMO project, which has 
 
 ## Acknowledgements
 
-* Special thanks to the authors of [the code behind the interactive map of Poland](https://cssmapsplugin.com/get/poland/)
+* Special thanks to [Łukasz Popardowski](http://popardowski.pl/web/) - the author of [the code behind the interactive map of Poland](https://cssmapsplugin.com/get/poland/)

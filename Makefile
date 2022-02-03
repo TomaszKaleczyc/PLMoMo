@@ -39,3 +39,6 @@ docker-down:
 docker-logs:
 	export VERSION=${VERSION} &&\
 	docker-compose ${DOCKER_COMPOSE_SETTINGS} logs -f
+
+docker-web-tests:
+	docker exec -it ${DOCKER_COMPOSE_CONTAINER_NAME} python manage.py test
