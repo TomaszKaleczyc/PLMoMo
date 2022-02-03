@@ -24,3 +24,11 @@ class MortalityFactTestModel(TransactionTestCase):
         """
         self.assertTrue(isinstance(self.mortality_fact, MortalityFact))
 
+    def test_dictionaries(self):
+        """
+        Proper dictionary values set
+        """
+        self.assertTrue(self.mortality_fact.gender == 0)
+        self.assertTrue(self.mortality_fact.age_group == 7)
+        self.assertTrue(self.mortality_fact.region == 6)
+
