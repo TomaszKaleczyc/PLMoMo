@@ -42,3 +42,6 @@ docker-logs:
 
 docker-web-tests:
 	docker exec -it ${DOCKER_COMPOSE_CONTAINER_NAME} python manage.py test
+
+docker-backend-tests:
+	docker exec -it -w /code ${DOCKER_COMPOSE_CONTAINER_NAME} python3 -m pytest backend/tests/

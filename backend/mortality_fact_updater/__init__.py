@@ -1,0 +1,1 @@
+from .mortality_fact_updater import MortalityFactUpdater
