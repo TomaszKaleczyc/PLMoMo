@@ -1,4 +1,6 @@
-# PLMoMo backend
+<img src="../web/static/images/logo.png" alt="drawing" width="435"/>
+
+# PLMoMo Backend
 
 This component is responsible for updating the project database.
 

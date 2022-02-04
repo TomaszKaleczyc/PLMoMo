@@ -2,7 +2,7 @@ from pathlib import PosixPath
 from .mortality_file_extractor import MortalityFileExtractor
 
 
-class MortalityXLSExtractor(MortalityFileExtractor):
+class MortalityXLSXExtractor(MortalityFileExtractor):
     """
     Extracts mortality facts from Statistics Poland XLS files
     """

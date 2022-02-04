@@ -1,11 +1,11 @@
 import logging
-from pathlib import Path
+from pathlib import Path, PosixPath
 from typing import List
 
 from omegaconf import DictConfig
 
 from .mortality_file_extractor import MortalityFileExtractor
-from .mortality_xls_extractor import MortalityXLSExtractor
+from .mortality_xlsx_extractor import MortalityXLSXExtractor
 
 
 class MortalityActualsExtractor:
@@ -15,11 +15,10 @@ class MortalityActualsExtractor:
 
     def __init__(self, cfg: DictConfig):
         self.cfg = cfg
-        self.mortality_data_path = Path(cfg.mortality_data_path)
         self.mortality_data_files: List[MortalityFileExtractor] = []
         self.log = logging.getLogger(__name__)
 
-    def extract_actuals(self):
+    def extract_actuals(self) -> None:
         """
         Extracts the mortality data
         """
@@ -29,3 +28,19 @@ class MortalityActualsExtractor:
         """
         Sets the mortality data files list
         """
+        mortality_data_filepaths = self._get_mortality_data_filepaths()
+        self.log.info(mortality_data_filepaths)
+
+    def _get_mortality_data_filepaths(self) -> List[PosixPath]:
+        """
+        Returns paths to mortality data files
+        """
+        mortality_data_dir = Path(self.cfg.raw_data.mortality_data_dir)
+        file_suffix = self.cfg.raw_data.file_suffix
+        mortality_data_filepaths = [
+            filepath for filepath in mortality_data_dir.iterdir()
+            if filepath.suffix == file_suffix
+            ]
+        return mortality_data_filepaths
+
+

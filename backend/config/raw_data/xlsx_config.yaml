@@ -1,0 +1,2 @@
+mortality_data_dir: '../../../data/mortality'
+file_suffix: .xlsx
