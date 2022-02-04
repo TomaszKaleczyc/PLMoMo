@@ -1,0 +1,25 @@
+version: 1
+formatters:
+  base_formatter:
+    format: "%(asctime)s - [%(module)s] - [%(levelname)s] - %(message)s"
+    datefmt: "%d.%m.%y %H:%M:%S"
+handlers:
+  error_handler:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: base_formatter
+    stream: ext://sys.stderr
+  base_handler:
+    class: logging.FileHandler
+    level: INFO
+    formatter: base_formatter
+    filename: "plmomo_backend.log"
+    mode: "w"
+loggers:
+  base_logger:
+    handlers: [error_handler, base_handler]
+    propagate: no
+root:
+  level: DEBUG
+  handlers: [error_handler]
+disable_existing_loggers: False

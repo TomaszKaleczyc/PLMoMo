@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from omegaconf import DictConfig
@@ -13,12 +14,11 @@ class MortalityFactUpdater:
 
     def __init__(self, cfg: DictConfig):
         self.cfg = cfg
-        self.mortality_data_path = Path(cfg.mortality_data_path)
-        self.mortality_actuals_extractor = MortalityActualsExtractor()
+        self.mortality_actuals_extractor = MortalityActualsExtractor(cfg=cfg)
+        self.log = logging.getLogger(__name__)
 
     def update_db(self) -> None:
         """
         Updates the project database mortality facts
         """
-        print(self.cfg)
-        print(self.mortality_data_path)
+        self.mortality_actuals_extractor.extract_actuals()

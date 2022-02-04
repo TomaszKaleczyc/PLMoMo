@@ -1,6 +1,6 @@
-<img src="web/static/images/logo.png" alt="drawing" width="400"/>
+<img src="web/static/images/logo.png" alt="drawing" width="435"/>
 
-#  Polish Mortality Monitoring system
+#  Polish Mortality Monitoring System
 
 This project is intended to create a website allowing interactive deepdive into mortality data for Poland, aiming to detect and measure excess deaths related to seasonal influenza, pandemics and other public health threats. It is to be based on the functionalities and information hosted by the [EuroMOMO](https://www.euromomo.eu/). 
 
@@ -14,8 +14,7 @@ As of January 2022, Poland is still not part of the EuroMOMO project, which has 
 ## Project structure
 
 ```
-├── backend                             # Application backend code
-│   └── tests                           # Backend code tests
+├── backend                             # Application backend code (see: backend/README.md)
 ├── data                                # Data used in the project
 │   └── mortality                       # Spreadsheets with mortality data sourced from Statistics Poland
 ├── docs                                # Additional process documentation

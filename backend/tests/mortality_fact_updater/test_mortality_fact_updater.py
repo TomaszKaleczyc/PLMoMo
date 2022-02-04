@@ -29,4 +29,3 @@ class TestMortalityFactUpdater:
         Object properly instantiated
         """
         assert isinstance(self.mortality_fact_updater.mortality_actuals_extractor, MortalityActualsExtractor)
-        assert isinstance(self.mortality_fact_updater.mortality_data_path, PosixPath)
