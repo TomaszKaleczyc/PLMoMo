@@ -45,3 +45,7 @@ docker-web-tests:
 
 docker-backend-tests:
 	docker exec -it -w /code ${DOCKER_COMPOSE_CONTAINER_NAME} python3 -m pytest backend/tests/
+
+docker-migrate-models:
+	docker exec -it ${DOCKER_COMPOSE_CONTAINER_NAME} python manage.py makemigrations &&\
+	docker exec -it ${DOCKER_COMPOSE_CONTAINER_NAME} python manage.py migrate

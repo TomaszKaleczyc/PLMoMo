@@ -63,6 +63,5 @@ class MortalityFact(models.Model):
     gender = models.IntegerField(choices=Gender.choices)
     age_group = models.IntegerField(choices=AgeGroup.choices)
     region = models.IntegerField(choices=Region.choices)
+    recorded_date = models.DateField(null=False)
     deceased_actuals = models.IntegerField()
-    deceased_estimation = models.FloatField(null=True)
-    estimation_deviation = models.FloatField(null=True)
