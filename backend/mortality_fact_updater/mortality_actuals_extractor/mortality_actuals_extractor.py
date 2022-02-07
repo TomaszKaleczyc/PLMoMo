@@ -37,6 +37,7 @@ class MortalityActualsExtractor:
         Sets the mortality data files list
         """
         mortality_data_filepaths = self._get_mortality_data_filepaths()
+        mortality_file_extractor = self._get_mortality_file_extractor()
 
     def _get_mortality_data_filepaths(self) -> List[PosixPath]:
         """
@@ -46,7 +47,13 @@ class MortalityActualsExtractor:
             filepath for filepath in self.mortality_data_dir.iterdir()
             if filepath.suffix == self.mortality_file_suffix
             ]
-        self.log.info(f'Found {len(mortality_data_filepaths)}')
+        self.log.info(f'Found {len(mortality_data_filepaths)} of type {self.mortality_file_suffix}')
         return mortality_data_filepaths
 
-
+    def _get_mortality_file_extractor(self) -> MortalityFileExtractor:
+        """
+        Returns the proper file extractor
+        """
+        if self.mortality_file_suffix == '.xlsx':
+            return MortalityXLSXExtractor
+        raise NotImplementedError

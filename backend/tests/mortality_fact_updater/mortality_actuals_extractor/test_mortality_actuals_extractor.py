@@ -1,10 +1,8 @@
 import pytest
-from unittest.mock import patch
 
-from pathlib import Path, PosixPath
 from omegaconf import DictConfig
 
-from backend.mortality_fact_updater.mortality_actuals_extractor import MortalityActualsExtractor
+from backend.mortality_fact_updater.mortality_actuals_extractor import MortalityActualsExtractor, MortalityXLSXExtractor
 from .template_test_class import TemplateTestClass
 
 def cfg():
@@ -52,4 +50,18 @@ class TestMortalityActualsExtractor(TemplateTestClass):
         mortality_data_filepaths = self.mortality_actuals_extractor._get_mortality_data_filepaths()
         assert(len(mortality_data_filepaths) == expected_num_files)
 
-
+    @pytest.mark.parametrize('mortality_file_suffix, expected_output', [
+        ('.xlsx', MortalityXLSXExtractor),
+        ('.foo', None),
+    ])
+    def test_get_mortality_file_extractor(self, mortality_file_suffix, expected_output):
+        """
+        Proper mortality file extractor returned
+        """
+        self.mortality_actuals_extractor.cfg.raw_data.file_suffix = mortality_file_suffix
+        if expected_output is None:
+            with pytest.raises(NotImplementedError) as error:
+                mortality_file_extractor = self.mortality_actuals_extractor._get_mortality_file_extractor()
+        else:
+            mortality_file_extractor = self.mortality_actuals_extractor._get_mortality_file_extractor()
+            assert mortality_file_extractor == expected_output
