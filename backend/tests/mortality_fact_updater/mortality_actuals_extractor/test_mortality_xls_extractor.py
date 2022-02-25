@@ -79,17 +79,16 @@ class TestMortalityXLSExtractor:
         assert isinstance(self.mortality_xls_extractor, MortalityFileExtractor)
         assert isinstance(self.mortality_xls_extractor.cfg, DictConfig)
 
-    @pytest.mark.parametrize('gender_sheet_name, expected_deceased_sum', [
-        ('MĘŻCZYŹNI', 10448),
-        ('KOBIETY', 10604)
+    @pytest.mark.parametrize('gender_sheet_name, expected_deceased_w1_sum', [
+        ('MĘŻCZYŹNI', 5657),
+        ('KOBIETY', 5662)
     ])
-    def test_extract_gender_sheet(self, gender_sheet_name, expected_deceased_sum):
+    def test_extract_gender_sheet(self, gender_sheet_name, expected_deceased_w1_sum):
         """
         Gender sheet properly extracted
         """
-        mortality_gender_facts = self.mortality_xls_extractor._extract_gender_sheet(gender_sheet_name)
-        assert not mortality_gender_facts.empty
-        # assert mortality_gender_facts['deceased_actuals'].sum() == expected_deceased_sum
+        mortality_gender_sheet_facts = self.mortality_xls_extractor._extract_gender_sheet(gender_sheet_name)
+        assert mortality_gender_sheet_facts['T01'].sum() == expected_deceased_w1_sum
 
     @pytest.mark.parametrize('gender_sheet_name, expected_deceased_w2_sum', [
         ('MĘŻCZYŹNI', 38328),
@@ -99,7 +98,7 @@ class TestMortalityXLSExtractor:
         """
         Gender sheet properly extracted
         """
-        raw_annual_gender_mortality_facts = self.mortality_xls_extractor._extract_gender_sheet(gender_sheet_name)
+        raw_annual_gender_mortality_facts = self.mortality_xls_extractor._read_raw_xlsx_sheet(gender_sheet_name)
         assert raw_annual_gender_mortality_facts['T02'].sum() == expected_deceased_w2_sum
 
     def test_map_regions(self, raw_annual_gender_mortality_facts):
@@ -109,3 +108,11 @@ class TestMortalityXLSExtractor:
         region_gender_mortality_facts = self.mortality_xls_extractor._map_regions(raw_annual_gender_mortality_facts)
         assert region_gender_mortality_facts['T01'].sum() == 11324
         assert 'region' in region_gender_mortality_facts.columns
+
+    def test_map_age_groups(self, raw_annual_gender_mortality_facts):
+        """
+        Age group information properly mapped
+        """
+        gender_sheet_facts = self.mortality_xls_extractor._map_age_groups(raw_annual_gender_mortality_facts)
+        assert gender_sheet_facts['T01'].sum() == 22648
+        assert 'age_group' in gender_sheet_facts.columns

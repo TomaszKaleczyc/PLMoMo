@@ -35,6 +35,10 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
     def regions(self) -> Dict[str, int]:
         return self.cfg.raw_data.regions
 
+    @property
+    def age_groups(self) -> Dict[str, int]:
+        return self.cfg.raw_data.age_groups
+
     def extract_actuals(self) -> None:
         """
         Extracts mortality data facts
@@ -56,9 +60,8 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         raw_annual_gender_mortality_facts = self._read_raw_xlsx_sheet(gender_sheet_name)
         region_gender_mortality_facts = self._map_regions(raw_annual_gender_mortality_facts)
-        # self._map_age_groups()
-        # 
-        return raw_annual_gender_mortality_facts
+        gender_sheet_facts = self._map_age_groups(region_gender_mortality_facts)
+        return gender_sheet_facts
 
     def _read_raw_xlsx_sheet(self, gender_sheet_name: str) -> DataFrame:
         """
@@ -75,8 +78,20 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         Maps and filters regions
         """
-        raw_annual_gender_mortality_facts.rename(columns={'Unnamed: 1': 'region'}, inplace=True)
+        region_column = raw_annual_gender_mortality_facts.columns[1]
+        raw_annual_gender_mortality_facts.rename(columns={region_column: 'region'}, inplace=True)
         region_gender_mortality_facts = raw_annual_gender_mortality_facts[
             raw_annual_gender_mortality_facts['region'].isin(self.regions.keys())
-        ].copy()  
+        ]  
         return region_gender_mortality_facts
+
+    def _map_age_groups(self, region_gender_mortality_facts: DataFrame) -> DataFrame:
+        """
+        Maps and filters age groups
+        """
+        age_group_column = region_gender_mortality_facts.columns[0]
+        region_gender_mortality_facts.rename(columns={age_group_column: 'age_group'}, inplace=True)
+        gender_sheet_facts = region_gender_mortality_facts[
+            region_gender_mortality_facts['age_group'].isin(self.age_groups.keys())
+        ]
+        return gender_sheet_facts
