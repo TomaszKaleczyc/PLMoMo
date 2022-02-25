@@ -31,6 +31,10 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
     def genders(self) -> Dict[str, int]:
         return self.cfg.raw_data.genders
 
+    @property
+    def regions(self) -> Dict[str, int]:
+        return self.cfg.raw_data.regions
+
     def extract_actuals(self) -> None:
         """
         Extracts mortality data facts
@@ -50,10 +54,11 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         Extracts gender sheet
         """
-        raw_annual_mortality_facts = self._read_raw_xlsx_sheet(gender_sheet_name)
+        raw_annual_gender_mortality_facts = self._read_raw_xlsx_sheet(gender_sheet_name)
+        region_gender_mortality_facts = self._map_regions(raw_annual_gender_mortality_facts)
         # self._map_age_groups()
-        # self._map_regions()
-        return raw_annual_mortality_facts
+        # 
+        return raw_annual_gender_mortality_facts
 
     def _read_raw_xlsx_sheet(self, gender_sheet_name: str) -> DataFrame:
         """
@@ -65,3 +70,12 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
                         sheet_name=gender_sheet_name)
         raw_annual_mortality_facts = raw_annual_mortality_facts[1:]  # first row is blank, skipping row in pandas doesn't work correctly
         return raw_annual_mortality_facts
+
+    def _map_regions(self, raw_annual_gender_mortality_facts: DataFrame) -> DataFrame:
+        """
+        Maps and filters regions
+        """
+        region_gender_mortality_facts = raw_annual_gender_mortality_facts[
+            raw_annual_gender_mortality_facts['Unnamed: 1'].isin(self.regions.keys())
+        ].copy()
+        return region_gender_mortality_facts

@@ -11,13 +11,54 @@ from backend.mortality_fact_updater.mortality_actuals_extractor import Mortality
 def cfg():
     return DictConfig({
         'raw_data': DictConfig(
-            {'genders': {'MĘŻCZYŹNI': 0, 'KOBIETY': 1}}
+            {
+                'genders': {'MĘŻCZYŹNI': 0, 'KOBIETY': 1},
+                'regions': {
+                    "PL51": 0,  # Dolnośląskie
+                    "PL61": 1,  # Kujawsko-pomorskie
+                    "PL81": 2,  # Lubelskie
+                    "PL43": 3,  # Lubuskie
+                    "PL71": 4,  # Łódzkie
+                    "PL21": 5,  # Małopolskie
+                    "PL9": 6,   # Mazowieckie - macroregion!
+                    "PL52": 7,  # Opolskie
+                    "PL82": 8,  # Podkarpackie
+                    "PL84": 9,  # Podlaskie
+                    "PL63": 10, # Pomorskie
+                    "PL22": 11, # Śląskie
+                    "PL72": 12, # Świętokrzyskie
+                    "PL62": 13, # Warmińsko-mazurskie
+                    "PL41": 14, # Wielkopolskie
+                    "PL42": 15  # Zachodniopomorskie
+                    },
+                'age_groups': {
+                    "0 - 4": 0,
+                    "5 - 9": 1,
+                    "10 - 14": 2,
+                    "15 - 19": 3,
+                    "20 - 24": 4,
+                    "25 - 29": 5,
+                    "30 - 34": 6,
+                    "35 - 39": 7,
+                    "40 - 44": 8,
+                    "45 - 49": 9,
+                    "50 - 54": 10,
+                    "55 - 59": 11,
+                    "60 - 64": 12,
+                    "65 - 69": 13,
+                    "70 - 74": 14,
+                    "75 - 79": 15,
+                    "80 - 84": 16,
+                    "85 - 89": 17,
+                    "90 i więcej": 18
+                    }
+                }
         )
     })
 
 
 @pytest.fixture
-def raw_annual_mortality_df():
+def raw_annual_gender_mortality_facts():
     data_csv_path = 'backend/tests/mortality_fact_updater/mortality_actuals_extractor/test_data/raw_annual_mortality_df.csv'
     return pd.read_csv(data_csv_path, index_col=0)
 
@@ -58,5 +99,12 @@ class TestMortalityXLSExtractor:
         """
         Gender sheet properly extracted
         """
-        raw_annual_mortality_facts = self.mortality_xls_extractor._extract_gender_sheet(gender_sheet_name)
-        assert raw_annual_mortality_facts['T02'].sum() == expected_deceased_w2_sum
+        raw_annual_gender_mortality_facts = self.mortality_xls_extractor._extract_gender_sheet(gender_sheet_name)
+        assert raw_annual_gender_mortality_facts['T02'].sum() == expected_deceased_w2_sum
+
+    def test_map_regions(self, raw_annual_gender_mortality_facts):
+        """
+        Region information properly mapped
+        """
+        region_gender_mortality_facts = self.mortality_xls_extractor._map_regions(raw_annual_gender_mortality_facts)
+        assert region_gender_mortality_facts['T01'].sum() == 11324
