@@ -79,16 +79,18 @@ class TestMortalityXLSExtractor:
         assert isinstance(self.mortality_xls_extractor, MortalityFileExtractor)
         assert isinstance(self.mortality_xls_extractor.cfg, DictConfig)
 
-    @pytest.mark.parametrize('gender_sheet_name, expected_deceased_w1_sum', [
-        ('MĘŻCZYŹNI', 5657),
-        ('KOBIETY', 5662)
+    @pytest.mark.parametrize('gender_data, expected_deceased_w1_sum', [
+        (('MĘŻCZYŹNI', 0), 5657),
+        (('KOBIETY', 1), 5662)
     ])
-    def test_extract_gender_sheet(self, gender_sheet_name, expected_deceased_w1_sum):
+    def test_get_gender_sheet(self, gender_data, expected_deceased_w1_sum):
         """
         Gender sheet properly extracted
         """
-        mortality_gender_sheet_facts = self.mortality_xls_extractor._extract_gender_sheet(gender_sheet_name)
+        mortality_gender_sheet_facts = self.mortality_xls_extractor._get_gender_sheet(gender_data)
         assert mortality_gender_sheet_facts['T01'].sum() == expected_deceased_w1_sum
+        for column in ['gender', 'age_group', 'region']:
+            assert column in mortality_gender_sheet_facts.columns
 
     @pytest.mark.parametrize('gender_sheet_name, expected_deceased_w2_sum', [
         ('MĘŻCZYŹNI', 38328),
@@ -100,6 +102,15 @@ class TestMortalityXLSExtractor:
         """
         raw_annual_gender_mortality_facts = self.mortality_xls_extractor._read_raw_xlsx_sheet(gender_sheet_name)
         assert raw_annual_gender_mortality_facts['T02'].sum() == expected_deceased_w2_sum
+
+    def test_map_gender(self, raw_annual_gender_mortality_facts):
+        """
+        Gender data properly mapped
+        """
+        gender_id = 1
+        gender_mortality_facts = self.mortality_xls_extractor._map_gender(raw_annual_gender_mortality_facts, gender_id)
+        assert 'gender' in gender_mortality_facts.columns
+        assert gender_mortality_facts['gender'].mean() == gender_id
 
     def test_map_regions(self, raw_annual_gender_mortality_facts):
         """
