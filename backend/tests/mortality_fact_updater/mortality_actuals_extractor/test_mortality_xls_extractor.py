@@ -1,3 +1,4 @@
+import pickle
 import pytest
 from pathlib import Path
 from unittest.mock import Mock
@@ -13,6 +14,7 @@ def cfg():
         'raw_data': DictConfig(
             {
                 'genders': {'MĘŻCZYŹNI': 0, 'KOBIETY': 1},
+                'fact_columns': ['gender', 'region', 'age_group', 'recorded_date'],
                 'regions': {
                     "PL51": 0,  # Dolnośląskie
                     "PL61": 1,  # Kujawsko-pomorskie
@@ -66,7 +68,15 @@ def raw_annual_gender_mortality_facts():
 @pytest.fixture
 def gender_sheet():
     data_csv_path = 'backend/tests/mortality_fact_updater/mortality_actuals_extractor/test_data/gender_sheet.csv'
-    return pd.read_csv(data_csv_path, index_col=0)   
+    return pd.read_csv(data_csv_path, index_col=0)
+
+
+@pytest.fixture
+def gender_sheet_row():
+    file_path = 'backend/tests/mortality_fact_updater/mortality_actuals_extractor/test_data/gender_sheet_row.pkl'
+    with open(file_path, 'rb') as file:
+        gender_sheet_row = pickle.load(file)
+    return gender_sheet_row
 
 
 class TestMortalityXLSExtractor:
@@ -84,6 +94,12 @@ class TestMortalityXLSExtractor:
         """
         assert isinstance(self.mortality_xls_extractor, MortalityFileExtractor)
         assert isinstance(self.mortality_xls_extractor.cfg, DictConfig)
+
+    def test_fact_year(self):
+        """
+        Fact year properly identified
+        """
+        assert self.mortality_xls_extractor.fact_year == 2022
 
     @pytest.mark.parametrize('gender_data, expected_deceased_w1_sum', [
         (('MĘŻCZYŹNI', 0), 5657),
@@ -141,4 +157,47 @@ class TestMortalityXLSExtractor:
         Extracted gender sheet properly transformed into fact table
         """
         gender_sheet_facts = self.mortality_xls_extractor._transform_gender_sheet_into_facts_table(gender_sheet)
+        assert len(gender_sheet_facts) == 608
+        assert gender_sheet_facts['deceased_actuals'].sum() == 10604
 
+    @pytest.mark.parametrize('column_name, expected_result', [
+        ('T01', True),
+        ('age_group', False),
+        ('TX000', False)
+    ])
+    def test_is_date_column(self, column_name, expected_result):
+        """
+        Column name properly identified as date column
+        """
+        assert self.mortality_xls_extractor.is_date_column(column_name) == expected_result
+
+    @pytest.mark.parametrize('date_column_name, expected_result', [
+        ('T01', '2022-01-03'),
+        ('T07', '2022-02-14'),
+    ])
+    def test_get_recorded_date(self, date_column_name, expected_result):
+        """
+        Column name properly identified as date column
+        """
+        assert self.mortality_xls_extractor._get_recorded_date(date_column_name) == expected_result
+
+    def test_get_fact_base(self, gender_sheet_row):
+        """
+        Fact base properly returned
+        """
+        fact_base = self.mortality_xls_extractor._get_fact_base(gender_sheet_row)
+        assert fact_base['gender'] == 1
+        assert fact_base['age_group'] == 0
+        assert fact_base['region'] == 5
+        assert fact_base.get('Unnamed: 1') is None
+
+    def test_get_fact_from_row(self, gender_sheet_row):
+        """
+        All facts from row properly extracted
+        """
+        facts_from_row = self.mortality_xls_extractor._get_facts_from_row(gender_sheet_row)
+        assert len(facts_from_row) == 2
+        assert facts_from_row[0]['deceased_actuals'] == 2
+        assert facts_from_row[0]['region'] == 5
+
+   

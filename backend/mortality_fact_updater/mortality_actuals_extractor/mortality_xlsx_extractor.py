@@ -1,9 +1,13 @@
+
+import datetime
 import logging
+import re
+from copy import copy
 from pathlib import PosixPath
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from omegaconf import DictConfig
 
 from .mortality_file_extractor import MortalityFileExtractor
@@ -32,12 +36,20 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         return self.cfg.raw_data.genders
 
     @property
+    def fact_columns(self) -> List[str]:
+        return self.cfg.raw_data.fact_columns
+
+    @property
     def regions(self) -> Dict[str, int]:
         return self.cfg.raw_data.regions
 
     @property
     def age_groups(self) -> Dict[str, int]:
         return self.cfg.raw_data.age_groups
+
+    @property
+    def fact_year(self) -> int:
+        return int(self.file_path.stem.split('_')[-1])
 
     def extract_actuals(self) -> None:
         """
@@ -112,3 +124,62 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         Transforms extracted gender table into facts table
         """
+        new_rows = []
+        for _, row in gender_sheet.iterrows():
+            facts_from_row = self._get_facts_from_row(row)
+            new_rows.append(facts_from_row)
+        all_facts = sum(new_rows, [])
+        gender_sheet_facts = DataFrame(all_facts)
+        return gender_sheet_facts
+
+    def _get_facts_from_row(self, row: Series) -> List[dict]:
+        """
+        Returns all facts from the xls sheet row
+        """
+        fact_base = self._get_fact_base(row)
+        facts_from_row = []
+        for column_name in row.index:
+            if not self.is_date_column(column_name):
+                continue
+            fact = self._get_fact(fact_base, column_name, row)
+            if pd.isnull(fact['deceased_actuals']):
+                continue
+            facts_from_row.append(fact)
+        return facts_from_row
+
+    def _get_fact_base(self, row: Series) -> dict:
+        """
+        Returns the fact base for the gender sheet row
+        """
+        fact_base = {}
+        for column_name in row.index:
+            if column_name not in self.fact_columns:
+                continue
+            fact_base[column_name] = row[column_name]
+        return fact_base
+
+    def _get_fact(self, fact_base: dict, date_column_name: str, row: Series) -> dict:
+        """
+        Gets single fact dictionary
+        """
+        fact = copy(fact_base)
+        fact['recorded_date'] = self._get_recorded_date(date_column_name)
+        fact['deceased_actuals'] = row[date_column_name]
+        return fact
+
+    def _get_recorded_date(self, date_column_name: str) -> str:
+        """
+        Returns the reported fact date
+        """
+        week_number = int(date_column_name[1:])
+        string = f"{self.fact_year}-{week_number}-1" 
+        conv_date = datetime.datetime.strptime(string, '%Y-%W-%w').date()
+        return str(conv_date)
+    
+    @staticmethod
+    def is_date_column(column_name: str) -> bool:
+        """
+        Checks if column name refers to a date column
+        """
+        match = re.match('^[T][0-9][0-9]', column_name)
+        return match is not None
