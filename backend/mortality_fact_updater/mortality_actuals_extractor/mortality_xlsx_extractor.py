@@ -50,7 +50,8 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         Exctracts mortality data facts from a given gender sheet
         """
-        gender_sheet_facts = self._get_gender_sheet(gender_data)
+        gender_sheet = self._get_gender_sheet(gender_data)
+        gender_sheet_facts = self._transform_gender_sheet_into_facts_table(gender_sheet)
         self.mortality_facts = pd.concat((self.mortality_facts, gender_sheet_facts))
 
     def _get_gender_sheet(self, gender_data: Tuple[str, int]) -> DataFrame:
@@ -61,8 +62,8 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         raw_annual_gender_mortality_facts = self._read_raw_xlsx_sheet(gender_sheet_name)
         gender_mortality_facts = self._map_gender(raw_annual_gender_mortality_facts, gender_id)
         region_gender_mortality_facts = self._map_regions(gender_mortality_facts)
-        gender_sheet_facts = self._map_age_groups(region_gender_mortality_facts)
-        return gender_sheet_facts
+        gender_sheet = self._map_age_groups(region_gender_mortality_facts)
+        return gender_sheet
 
     def _read_raw_xlsx_sheet(self, gender_sheet_name: str) -> DataFrame:
         """
@@ -92,6 +93,7 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         region_gender_mortality_facts = raw_annual_gender_mortality_facts[
             raw_annual_gender_mortality_facts['region'].isin(self.regions.keys())
         ].copy()
+        region_gender_mortality_facts['region'].replace(self.regions, inplace=True)
         return region_gender_mortality_facts
 
     def _map_age_groups(self, region_gender_mortality_facts: DataFrame) -> DataFrame:
@@ -103,4 +105,10 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         gender_sheet_facts = region_gender_mortality_facts[
             region_gender_mortality_facts['age_group'].isin(self.age_groups.keys())
         ].copy()
+        gender_sheet_facts['age_group'].replace(self.age_groups, inplace=True)
         return gender_sheet_facts
+
+    def _transform_gender_sheet_into_facts_table(self, gender_sheet: DataFrame) -> DataFrame:
+        """
+        Transforms extracted gender table into facts table
+        """
