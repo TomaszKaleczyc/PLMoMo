@@ -75,7 +75,8 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         Maps and filters regions
         """
+        raw_annual_gender_mortality_facts.rename(columns={'Unnamed: 1': 'region'}, inplace=True)
         region_gender_mortality_facts = raw_annual_gender_mortality_facts[
-            raw_annual_gender_mortality_facts['Unnamed: 1'].isin(self.regions.keys())
-        ].copy()
+            raw_annual_gender_mortality_facts['region'].isin(self.regions.keys())
+        ].copy()  
         return region_gender_mortality_facts

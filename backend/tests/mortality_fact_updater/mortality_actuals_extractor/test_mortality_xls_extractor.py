@@ -108,3 +108,4 @@ class TestMortalityXLSExtractor:
         """
         region_gender_mortality_facts = self.mortality_xls_extractor._map_regions(raw_annual_gender_mortality_facts)
         assert region_gender_mortality_facts['T01'].sum() == 11324
+        assert 'region' in region_gender_mortality_facts.columns
