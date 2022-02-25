@@ -200,4 +200,12 @@ class TestMortalityXLSExtractor:
         assert facts_from_row[0]['deceased_actuals'] == 2
         assert facts_from_row[0]['region'] == 5
 
-   
+    def test_extract_actuals(self):
+       """
+       Actuals properly extracted
+       """
+       self.mortality_xls_extractor.extract_actuals()
+       mortality_df = self.mortality_xls_extractor.mortality_facts
+       assert len(mortality_df) == 1216
+       assert mortality_df['gender'].sum() == 608
+       assert mortality_df['deceased_actuals'].sum() == 21052
