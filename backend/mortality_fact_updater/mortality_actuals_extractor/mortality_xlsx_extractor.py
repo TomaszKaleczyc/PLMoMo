@@ -1,6 +1,6 @@
 import logging
 from pathlib import PosixPath
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 import pandas as pd
 from pandas import DataFrame
@@ -43,15 +43,25 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         Exctracts mortality data facts from a given gender sheet
         """
         gender_sheet_name, gender_id = gender_data
-        mortality_gender_facts = self._extract_gender_sheet(gender_sheet_name)
+        gender_sheet_facts = self._extract_gender_sheet(gender_sheet_name)
+        self.mortality_facts = pd.concat((self.mortality_facts, gender_sheet_facts))
 
     def _extract_gender_sheet(self, gender_sheet_name: str) -> DataFrame:
         """
         Extracts gender sheet
         """
-        raw_annual_mortality_df = pd.read_excel(self.file_path, 
+        raw_annual_mortality_facts = self._read_raw_xlsx_sheet(gender_sheet_name)
+        # self._map_age_groups()
+        # self._map_regions()
+        return raw_annual_mortality_facts
+
+    def _read_raw_xlsx_sheet(self, gender_sheet_name: str) -> DataFrame:
+        """
+        Reads a raw xlsx sheet
+        """
+        raw_annual_mortality_facts = pd.read_excel(self.file_path, 
                         engine='openpyxl',
                         header=6,
                         sheet_name=gender_sheet_name)
-        raw_annual_mortality_df = raw_annual_mortality_df[1:]  # first row is blank, skipping row in pandas doesn't work correctly
-        return raw_annual_mortality_df
+        raw_annual_mortality_facts = raw_annual_mortality_facts[1:]  # first row is blank, skipping row in pandas doesn't work correctly
+        return raw_annual_mortality_facts
