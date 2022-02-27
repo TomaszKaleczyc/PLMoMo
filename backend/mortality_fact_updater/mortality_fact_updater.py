@@ -21,4 +21,5 @@ class MortalityFactUpdater:
         """
         Updates the project database mortality facts
         """
-        self.mortality_actuals_extractor.extract_actuals()
+        mortality_facts = self.mortality_actuals_extractor.extract_actuals()
+        

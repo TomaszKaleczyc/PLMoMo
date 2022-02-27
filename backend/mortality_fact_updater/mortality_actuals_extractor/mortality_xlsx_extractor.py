@@ -4,7 +4,7 @@ import logging
 import re
 from copy import copy
 from pathlib import PosixPath
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import pandas as pd
 from pandas import DataFrame, Series
@@ -57,6 +57,11 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         for gender_data in self.genders.items():
             self._extract_gender_sheet(gender_data)
+
+        if not self.mortality_facts.empty:
+            self.log.info(f'Year: {self.fact_year} - {len(self.mortality_facts)} mortality facts extracted ({self.mortality_facts.deceased_actuals.sum():.0f} of deaths in total)')
+        
+        return self.mortality_facts
 
     def _extract_gender_sheet(self, gender_data: Tuple[str, int]) -> None:
         """

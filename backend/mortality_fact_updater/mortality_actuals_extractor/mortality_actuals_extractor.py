@@ -2,6 +2,7 @@ import logging
 from pathlib import Path, PosixPath
 from typing import List
 
+import pandas as pd
 from pandas import DataFrame
 from omegaconf import DictConfig
 
@@ -28,12 +29,13 @@ class MortalityActualsExtractor:
     def mortality_file_suffix(self) -> str:
         return self.cfg.raw_data.file_suffix
 
-    def extract_actuals(self) -> None:
+    def extract_actuals(self) -> DataFrame:
         """
         Extracts the mortality data
         """
         self._set_mortality_data_files()
         self._extract_actuals_from_files()
+        return self.mortality_facts
 
     def _set_mortality_data_files(self) -> None:
         """
@@ -66,7 +68,9 @@ class MortalityActualsExtractor:
 
     def _extract_actuals_from_files(self):
         """
-        
+        Extracts the mortality facts from data files
         """
-        for mortality_data_file in self.mortality_data_files:
-            mortality_data_file.extract_actuals()
+        file_mortality_facts = [
+            mortality_data_file.extract_actuals() for mortality_data_file in self.mortality_data_files
+            ]
+        self.mortality_facts = pd.concat(file_mortality_facts, ignore_index=True, sort=False)

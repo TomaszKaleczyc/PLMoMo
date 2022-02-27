@@ -1,5 +1,7 @@
 import pytest
+from unittest.mock import Mock
 
+import pandas as pd
 from omegaconf import DictConfig
 
 from backend.mortality_fact_updater.mortality_actuals_extractor import MortalityActualsExtractor, MortalityXLSXExtractor
@@ -13,6 +15,12 @@ def cfg():
         })
     }
     return DictConfig(contents)
+
+
+@pytest.fixture
+def mortality_facts():
+    data_csv_path = 'backend/tests/mortality_fact_updater/mortality_actuals_extractor/test_data/mortality_facts.csv'
+    return pd.read_csv(data_csv_path, index_col=0)
     
 
 class TestMortalityActualsExtractor(TemplateTestClass):
@@ -65,3 +73,16 @@ class TestMortalityActualsExtractor(TemplateTestClass):
         else:
             mortality_file_extractor = self.mortality_actuals_extractor._get_mortality_file_extractor()
             assert mortality_file_extractor == expected_output
+
+    def test_extract_actuals_from_files(self, mortality_facts):
+        """
+        Mortality facts properly extracted
+        """
+        mortality_file_mock = Mock()
+        mortality_file_mock.extract_actuals.return_value = mortality_facts
+        self.mortality_actuals_extractor.mortality_data_files = [
+            mortality_file_mock,
+            mortality_file_mock,
+        ]
+        self.mortality_actuals_extractor._extract_actuals_from_files()
+        assert len(self.mortality_actuals_extractor.mortality_facts) == 2432
