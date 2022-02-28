@@ -1,3 +1,4 @@
 defaults:
   - raw_data: xlsx_config
+  - db: django
   - override hydra/job_logging: logging_config
