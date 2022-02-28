@@ -86,3 +86,6 @@ class TestMortalityActualsExtractor(TemplateTestClass):
         ]
         self.mortality_actuals_extractor._extract_actuals_from_files()
         assert len(self.mortality_actuals_extractor.mortality_facts) == 2432
+        columns = ['year','week','age_group','region','gender','deceased_actuals', 'foo']
+        for column in self.mortality_actuals_extractor.mortality_facts.columns:
+            assert column in columns

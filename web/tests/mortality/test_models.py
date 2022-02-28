@@ -17,7 +17,8 @@ class MortalityFactTestModel(TransactionTestCase):
             'MortalityFact',
             gender=Gender.MALE,
             age_group=AgeGroup.AGE_35_39,
-            recorded_date=date,
+            year=2022,
+            week=1,
             region=Region.MAZOWIECKIE,
             deceased_actuals=100
         )
@@ -27,7 +28,6 @@ class MortalityFactTestModel(TransactionTestCase):
         MortalityFact object properly created
         """
         self.assertTrue(isinstance(self.mortality_fact, MortalityFact)) 
-        self.assertTrue(self.mortality_fact.recorded_date.year == 2022)
 
     def test_dictionaries(self):
         """

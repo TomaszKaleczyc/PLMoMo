@@ -79,7 +79,7 @@ def gender_sheet_row():
     return gender_sheet_row
 
 
-class TestMortalityXLSExtractor:
+class TestMortalityXLSXExtractor:
     """
     MortalityXLSExtractor tests
     """
@@ -170,16 +170,6 @@ class TestMortalityXLSExtractor:
         Column name properly identified as date column
         """
         assert self.mortality_xls_extractor.is_date_column(column_name) == expected_result
-
-    @pytest.mark.parametrize('date_column_name, expected_result', [
-        ('T01', '2022-01-03'),
-        ('T07', '2022-02-14'),
-    ])
-    def test_get_recorded_date(self, date_column_name, expected_result):
-        """
-        Column name properly identified as date column
-        """
-        assert self.mortality_xls_extractor._get_recorded_date(date_column_name) == expected_result
 
     def test_get_fact_base(self, gender_sheet_row):
         """

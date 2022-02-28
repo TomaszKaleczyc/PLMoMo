@@ -156,7 +156,7 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         """
         Returns the fact base for the gender sheet row
         """
-        fact_base = {}
+        fact_base = {'year': self.reported_year}
         for column_name in row.index:
             if column_name not in self.fact_columns:
                 continue
@@ -168,18 +168,16 @@ class MortalityXLSXExtractor(MortalityFileExtractor):
         Gets single fact dictionary
         """
         fact = copy(fact_base)
-        fact['recorded_date'] = self._get_recorded_date(date_column_name)
+        fact['week'] = self._get_week_number(date_column_name)
         fact['deceased_actuals'] = row[date_column_name]
         return fact
 
-    def _get_recorded_date(self, date_column_name: str) -> str:
+    @staticmethod
+    def _get_week_number(date_column_name: str):
         """
-        Returns the reported fact date
+        Returns the week number from the column name
         """
-        week_number = int(date_column_name[1:])
-        string = f"{self.fact_year}-{week_number}-1" 
-        conv_date = datetime.datetime.strptime(string, '%Y-%W-%w').date()
-        return str(conv_date)
+        return int(date_column_name[1:])
     
     @staticmethod
     def is_date_column(column_name: str) -> bool:

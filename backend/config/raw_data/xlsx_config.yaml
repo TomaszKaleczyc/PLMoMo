@@ -1,6 +1,6 @@
-mortality_data_dir: "../../../data/mortality"
+mortality_data_dir: "../../../../data/mortality"
 file_suffix: .xlsx
-fact_columns: ['gender', 'region', 'age_group', 'recorded_date']
+fact_columns: ['gender', 'region', 'age_group', 'year', 'week']
 genders: {
   "MĘŻCZYŹNI": 0, 
   "KOBIETY": 1
