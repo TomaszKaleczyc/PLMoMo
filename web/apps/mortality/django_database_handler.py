@@ -9,7 +9,6 @@ if not settings.configured:
         DATABASES=django_settings.DATABASES,
         INSTALLED_APPS=[
             'web.apps.mortality',
-            # 'apps.mortality',
             ]
     )
     django.setup()
@@ -27,7 +26,16 @@ class DjangoDatabaseHandler(DatabaseHandler):
     """
 
     def update_actuals(self, mortality_facts: DataFrame) -> None:
-        ...
+        for _, fact in mortality_facts.iterrows():
+            mortality_fact = MortalityFact(
+                gender=fact['gender'],
+                age_group=fact['age_group'],
+                region=fact['region'],
+                year=fact['year'],
+                week=fact['week'],
+                deceased_actuals=fact['deceased_actuals'],          
+            )
+            mortality_fact.save()
 
     def update_estimations(self) -> None:
         raise NotImplementedError

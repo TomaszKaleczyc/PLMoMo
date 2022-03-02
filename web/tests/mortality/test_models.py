@@ -1,5 +1,3 @@
-import datetime
-
 from django.test import TransactionTestCase
 from model_bakery import baker
 
@@ -12,7 +10,6 @@ class MortalityFactTestModel(TransactionTestCase):
     """
 
     def setUp(self):
-        date = datetime.date(2022, 2, 7)
         self.mortality_fact = baker.make(
             'MortalityFact',
             gender=Gender.MALE,
