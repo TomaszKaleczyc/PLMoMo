@@ -1,10 +1,10 @@
 import hydra
 from omegaconf import DictConfig
 
-from mortality_fact_updater import MortalityFactUpdater
+from backend.mortality_fact_updater import MortalityFactUpdater
 
 
-CONFIG_PATH = 'config'
+CONFIG_PATH = 'backend/config'
 CONFIG_NAME = 'config'
 
 

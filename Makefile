@@ -50,5 +50,5 @@ docker-migrate-models:
 	docker exec -it ${DOCKER_COMPOSE_CONTAINER_NAME} python manage.py makemigrations &&\
 	docker exec -it ${DOCKER_COMPOSE_CONTAINER_NAME} python manage.py migrate
 
-run-main:
-	python3 backend/main.py
+docker-run-main:
+	docker exec -it -w /code ${DOCKER_COMPOSE_CONTAINER_NAME} python3 main.py

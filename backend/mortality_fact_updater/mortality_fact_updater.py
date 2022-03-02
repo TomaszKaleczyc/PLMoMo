@@ -39,4 +39,5 @@ class MortalityFactUpdater:
         """
         mortality_facts = self.mortality_actuals_extractor.extract_actuals()
         self.database_handler.update_actuals(mortality_facts)
+        self.log.info('Update of mortality facts complete')
         

@@ -1,4 +1,6 @@
-from pandas import DataFrame
+import logging
+
+from pandas import DataFrame, Series
 
 import django
 from django.conf import settings
@@ -24,18 +26,31 @@ class DjangoDatabaseHandler(DatabaseHandler):
     """
     Handles updating the Django database
     """
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
 
     def update_actuals(self, mortality_facts: DataFrame) -> None:
-        for _, fact in mortality_facts.iterrows():
-            mortality_fact = MortalityFact(
-                gender=fact['gender'],
-                age_group=fact['age_group'],
-                region=fact['region'],
-                year=fact['year'],
-                week=fact['week'],
-                deceased_actuals=fact['deceased_actuals'],          
-            )
-            mortality_fact.save()
+        self.log.info('Writing to django database initiatied...')
+        mortality_fact_objects = [
+            self._get_fact_object(fact) for _, fact in mortality_facts.iterrows()
+            ]
+        MortalityFact.objects.bulk_create(mortality_fact_objects)
+        self.log.info(f'{len(mortality_fact_objects)} actuals saved to database')
+
+    def _get_fact_object(self, fact: Series) -> MortalityFact:
+        """
+        Returns a single fact object
+        """
+        mortality_fact = MortalityFact(
+            gender=fact['gender'],
+            age_group=fact['age_group'],
+            region=fact['region'],
+            year=fact['year'],
+            week=fact['week'],
+            deceased_actuals=fact['deceased_actuals'],          
+        )
+        return mortality_fact
+
 
     def update_estimations(self) -> None:
         raise NotImplementedError
