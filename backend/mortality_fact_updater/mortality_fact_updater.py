@@ -30,7 +30,7 @@ class MortalityFactUpdater:
         """
         self.log.info(f'Database connection type: {self.db_type}')
         if self.db_type == 'django':
-            return DjangoDatabaseHandler()
+            return DjangoDatabaseHandler(cfg=self.cfg)
         raise NotImplementedError
 
     def update_db(self) -> None:

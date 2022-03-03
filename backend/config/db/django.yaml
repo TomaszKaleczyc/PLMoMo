@@ -1,2 +1,2 @@
 type: django
-override_existing_facts: True
+overwrite_completed_years: True
