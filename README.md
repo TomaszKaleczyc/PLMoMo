@@ -23,6 +23,17 @@ As of January 2022, Poland is still not part of the EuroMOMO project, which has 
 
 ```
 
+## Working with the project
+
+Before launching the project, define your `.env` file in the project root directory. You will find the `.env.example` file with default settings.
+
+From the root of the project repository, use the included Makefile to:
+
+* build the app containers - `make docker-build`
+* launch the app containers - `make docker-up`. The web app will become available on the port defined in the `.env` file)
+* stop the app containers - `make docker-down`
+
+
 ## Acknowledgements
 
 * Special thanks to [Łukasz Popardowski](http://popardowski.pl/web/) - the author of [the code behind the interactive map of Poland](https://cssmapsplugin.com/get/poland/)
